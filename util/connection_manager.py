@@ -125,3 +125,31 @@ def is_wrong_url(url):
         traceback.print_exc()
         result = False
     return result
+
+
+def getPhantomDriverUsingUrl(url):
+    driver = None
+    try:
+        headers = {
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Encoding': 'none',
+            'Accept-Language': 'ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4',
+            'Cache-Control': 'max-age=0',
+            'Connection': 'keep-alive',
+            'Accept-Charset': 'UTF-8,ISO-8859-1;q=0.7,*;q=0.3',
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36'
+        }
+
+        for key in headers:
+            webdriver.DesiredCapabilities.PHANTOMJS['phantomjs.page.customHeaders.{}'.format(key)] = headers[key]
+
+        driver = webdriver.PhantomJS('D:\workspace_pycharm\delivery_tracker\driver\phantomjs')
+        driver.set_window_size(1920, 1080)
+        driver.implicitly_wait(5)
+
+        driver.get(url)
+    except Exception:
+        traceback.print_exc()
+        driver.close()
+        driver = None
+    return driver
