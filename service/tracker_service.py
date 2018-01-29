@@ -1,8 +1,8 @@
+import traceback
+
 from domain.order_deliveries import OrderDeliveries
 from domain.url_config import UrlConfig
-from tracker.common_tracker import CommonTracker
-from tracker.hanjin_tracker import HanjinTracker
-from tracker.lotte_tracker import LotteTracker
+from tracker.tracker_factory import TrackerFactory
 
 
 class TrackerService:
@@ -14,13 +14,11 @@ class TrackerService:
         """ db select """
         delivery_list = OrderDeliveries.where('', '').get()
         for delivery in delivery_list:
-            if delivery.shipper_id is not 10 and delivery.shipper_id is not 2:
-                tracker = CommonTracker(delivery)
-            elif delivery.shipper_id is 2:
-                tracker = HanjinTracker(delivery)
-            else:
-                tracker = LotteTracker(delivery)
-
-            result = tracker.track()
-            print(result)
-            """ db update """
+            try:
+                result = TrackerFactory.get_tracker(delivery).track()
+            except Exception:
+                traceback.print_exc()
+                result = None
+            if result is not None:
+                print('update db')
+                """ db update """

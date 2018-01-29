@@ -1,6 +1,7 @@
 import traceback
 import urllib
 
+import requests
 from selenium import webdriver
 from urllib.parse import urlsplit
 
@@ -153,3 +154,24 @@ def getPhantomDriverUsingUrl(url):
         driver.close()
         driver = None
     return driver
+
+
+def postHtmlUsingRequest(url, form_data):
+    header = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Charset': 'UTF-8,ISO-8859-1;q=0.7,*;q=0.3',
+        'Accept-Encoding': 'none',
+        'Accept-Language': 'ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4',
+        'Connection': 'keep-alive'}
+
+    try:
+        req = requests.post(url, data=form_data, headers=header)
+        if req.status_code == 200:
+            source = req.text
+        else:
+            raise Exception
+    except Exception as e:
+        traceback.print_exc()
+        source = '<html><head></head><body><h1>Fail</h1></body></html>'
+    return source
