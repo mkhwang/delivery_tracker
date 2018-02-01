@@ -1,5 +1,5 @@
 import traceback
-from telnetlib import EC
+from selenium.webdriver.support import expected_conditions as EC
 
 from lxml import html
 from selenium.webdriver.common.by import By
